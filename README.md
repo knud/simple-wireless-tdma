@@ -2,7 +2,7 @@ simple-wireless-tdma
 ====================
 
 This is an ns3 (nsnam.org) module that originated with Hemanth Narra.
-It has been updated to work under ns3 3.24.1
+It has been updated to work under ns3 3.24.1.
 
 ## Example
 I have been able to run the tdma-example.cc by placing it under the 
