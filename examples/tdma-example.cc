@@ -123,7 +123,8 @@ int main (int argc, char **argv)
 
   // tdma parameters
   uint32_t nSlots = nWifis;
-  uint32_t slotTime = 1000;
+  // slotTime is at least the number of bytes in a packet * 8 bits/byte / bit rate * 1e6 microseconds
+  uint32_t slotTime = 1000 * 8 / 8000 * 1000000; // us
   uint32_t interFrameGap = 0;
   uint32_t guardTime = 0;
 
@@ -156,7 +157,7 @@ int main (int argc, char **argv)
 
   SeedManager::SetSeed (12345);
 
-  Config::SetDefault ("ns3::OnOffApplication::PacketSize", StringValue ("1000"));
+  Config::SetDefault ("ns3::OnOffApplication::PacketSize", StringValue ("1000")); // bytes!
   Config::SetDefault ("ns3::OnOffApplication::DataRate", StringValue (rate));
 
   LogComponentEnable ("TdmaExample", LOG_LEVEL_DEBUG);
@@ -169,8 +170,23 @@ int main (int argc, char **argv)
 }
 
 TdmaExample::TdmaExample ()
-  : bytesTotal (0),
-    packetsReceived (0)
+  : m_nWifis(30),
+		m_nSinks(10),
+		m_totalTime(100),
+	  m_rate ("8kbps"),
+	  m_phyMode ("DsssRate11Mbps"),
+	  m_nodeSpeed (10),
+	  m_periodicUpdateInterval (15),
+		m_settlingTime (6),
+	  m_dataStart (50.0),
+		bytesTotal (10000),
+    packetsReceived (0),
+	  m_CSVfileName ("tdmaExample.csv"),
+	  m_slots(30),
+	  m_slotTime (1000),
+    m_guardTime (0),
+	  m_interFrameGap (0)
+
 {
   NS_LOG_FUNCTION (this);
 }

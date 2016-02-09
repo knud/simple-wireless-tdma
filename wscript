@@ -42,7 +42,7 @@ def build(bld):
         'helper/tdma-helper.h',        
         ]
 
-    if (bld.env['ENABLE_EXAMPLES']):
-      bld.recurse('examples')
+    if bld.env.ENABLE_EXAMPLES:
+        bld.recurse('examples')
       
 #    bld.ns3_python_bindings()

@@ -297,7 +297,7 @@ TdmaController::CalculateTxTime (Ptr<const Packet> packet)
 {
   NS_LOG_FUNCTION (*packet);
   NS_ASSERT_MSG (packet->GetSize () < 1500,"PacketSize must be less than 1500B, it is: " << packet->GetSize ());
-  return Seconds (m_bps.CalculateBytesTxTime (packet->GetSize ()));
+  return m_bps.CalculateBytesTxTime (packet->GetSize ());
 }
 
 } // namespace ns3
