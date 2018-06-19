@@ -337,7 +337,8 @@ TdmaCentralMac::Enqueue (Ptr<const Packet> packet, Mac48Address to, Mac48Address
 {
   NS_LOG_FUNCTION (this << packet << to << from);
   WifiMacHeader hdr;
-  hdr.SetTypeData ();
+  //hdr.SetTypeData ();
+  hdr.SetType(WifiMacType::WIFI_MAC_DATA);
   hdr.SetAddr1 (to);
   hdr.SetAddr2 (GetAddress ());
   hdr.SetAddr3 (from);
@@ -350,7 +351,8 @@ TdmaCentralMac::Enqueue (Ptr<const Packet> packet, Mac48Address to)
 {
   NS_LOG_FUNCTION (this << packet << to);
   WifiMacHeader hdr;
-  hdr.SetTypeData ();
+  //hdr.SetTypeData ();
+  hdr.SetType(WifiMacType::WIFI_MAC_DATA);
   hdr.SetAddr1 (to);
   hdr.SetAddr2 (GetAddress ());
   hdr.SetAddr3 (m_low->GetAddress ());
