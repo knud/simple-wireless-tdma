@@ -276,18 +276,20 @@ TdmaHelper::Install (NodeContainer c) const
   NS_LOG_FUNCTION (this);
   NetDeviceContainer devices;
   NS_ASSERT (m_controller != 0);
+  uint32_t slotUserId = 0;
   for (NodeContainer::Iterator i = c.Begin (); i != c.End (); ++i)
     {
       Ptr<Node> node = *i;
       Ptr<TdmaNetDevice> device = CreateObject<TdmaNetDevice> ();
       Ptr<TdmaMac> mac = m_mac.Create<TdmaMac> ();
       mac->SetAddress (Mac48Address::Allocate ());
-      AssignTdmaSlots (mac,node->GetId ());
+      AssignTdmaSlots (mac,slotUserId);
       device->SetMac (mac);
       device->SetChannel (m_channel);
       device->SetTdmaController (m_controller);
       node->AddDevice (device);
       devices.Add (device);
+      slotUserId++;
     }
   return devices;
 }
