@@ -12,3 +12,4 @@ scratch directory so that
 
 will run. A configuration setting is missing somewhere to allow it to
 run from the src/simple-wireless-tdma/example directory.
+hello
