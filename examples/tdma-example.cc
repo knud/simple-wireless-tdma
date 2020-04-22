@@ -348,8 +348,8 @@ TdmaExample::CreateDevices (std::string tr_name, bool usingWifi, double txpDista
           txp = m_transmitRangeMap[txpDistance];
         }
 
-      NqosWifiMacHelper wifiMac = NqosWifiMacHelper::Default ();
-      wifiMac.SetType ("ns3::AdhocWifiMac");
+      // WifiMacHelper replaced NqosWifiMacHelper ~ v3.28
+      WifiMacHelper wifiMac = WifiMacHelper();
       YansWifiPhyHelper wifiPhy = YansWifiPhyHelper::Default ();
       YansWifiChannelHelper wifiChannel;
       wifiChannel.SetPropagationDelay ("ns3::ConstantSpeedPropagationDelayModel");
