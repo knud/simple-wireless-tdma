@@ -60,6 +60,7 @@ public:
                 uint32_t settlingTime,
                 double dataStart,
                 std::string CSVfileName,
+                std::string tdmaSlotsFile,
                 bool usingWifi,
                 double txpDistance,
                 uint32_t nSlots,
@@ -80,6 +81,7 @@ private:
   uint32_t bytesTotal;
   uint32_t packetsReceived;
   std::string m_CSVfileName;
+  std::string m_tdmaSlotsFile;
   uint32_t m_slots;
   uint32_t m_slotTime;
   uint32_t m_guardTime;
@@ -118,6 +120,7 @@ int main (int argc, char **argv)
   uint32_t settlingTime = 6;
   double dataStart = 50.0;
   std::string CSVfileName = "TdmaExample.csv";
+  std::string tdmaSlotsFile = "tdmaSlots.txt";
   bool usingWifi = false;
   double txpDistance = 400.0;
 
@@ -145,6 +148,7 @@ int main (int argc, char **argv)
   cmd.AddValue ("slotTime", "Slot transmission Time [Default(us):1000]", slotTime);
   cmd.AddValue ("guardTime", "Duration to wait between slots [Default(us):0]", guardTime);
   cmd.AddValue ("interFrameGap", "Duration between frames [Default(us):0]", interFrameGap);
+  cmd.AddValue ("tdmaSlotsFile", "Name of file defining tdma slots", tdmaSlotsFile);
   cmd.Parse (argc, argv);
 
   std::ofstream out (CSVfileName.c_str ());
@@ -164,7 +168,7 @@ int main (int argc, char **argv)
 
   test = TdmaExample ();
   test.CaseRun (nWifis, nSinks, totalTime, rate, phyMode, nodeSpeed, periodicUpdateInterval,
-                settlingTime, dataStart,CSVfileName,usingWifi,txpDistance, nSlots, slotTime, guardTime, interFrameGap);
+                settlingTime, dataStart,CSVfileName,tdmaSlotsFile,usingWifi,txpDistance, nSlots, slotTime, guardTime, interFrameGap);
 
   return 0;
 }
@@ -182,10 +186,11 @@ TdmaExample::TdmaExample ()
 		bytesTotal (10000),
     packetsReceived (0),
 	  m_CSVfileName ("tdmaExample.csv"),
+    m_tdmaSlotsFile("tdmaSlots.txt"),
 	  m_slots(30),
 	  m_slotTime (1000),
     m_guardTime (0),
-	  m_interFrameGap (0)
+    m_interFrameGap (0)
 
 {
   NS_LOG_FUNCTION (this);
@@ -234,7 +239,7 @@ TdmaExample::SetupPacketReceive (Ipv4Address addr, Ptr <Node> node)
 void
 TdmaExample::CaseRun (uint32_t nWifis, uint32_t nSinks, double totalTime, std::string rate,
                       std::string phyMode, uint32_t nodeSpeed, uint32_t periodicUpdateInterval, uint32_t settlingTime,
-                      double dataStart, std::string CSVfileName, bool usingWifi, double txpDistance, uint32_t nSlots,
+                      double dataStart, std::string CSVfileName, std::string tdmaSlotsFile, bool usingWifi, double txpDistance, uint32_t nSlots,
                       uint32_t slotTime, uint32_t guardTime, uint32_t interFrameGap)
 {
   m_nWifis = nWifis;
@@ -247,6 +252,7 @@ TdmaExample::CaseRun (uint32_t nWifis, uint32_t nSinks, double totalTime, std::s
   m_settlingTime = settlingTime;
   m_dataStart = dataStart;
   m_CSVfileName = CSVfileName;
+  m_tdmaSlotsFile = tdmaSlotsFile;
   m_slots = nSlots;
   m_slotTime = slotTime;
   m_guardTime = guardTime;
@@ -348,8 +354,8 @@ TdmaExample::CreateDevices (std::string tr_name, bool usingWifi, double txpDista
           txp = m_transmitRangeMap[txpDistance];
         }
 
-      NqosWifiMacHelper wifiMac = NqosWifiMacHelper::Default ();
-      wifiMac.SetType ("ns3::AdhocWifiMac");
+      // WifiMacHelper replaced NqosWifiMacHelper ~ v3.28
+      WifiMacHelper wifiMac = WifiMacHelper();
       YansWifiPhyHelper wifiPhy = YansWifiPhyHelper::Default ();
       YansWifiChannelHelper wifiChannel;
       wifiChannel.SetPropagationDelay ("ns3::ConstantSpeedPropagationDelayModel");
@@ -384,7 +390,7 @@ TdmaExample::CreateDevices (std::string tr_name, bool usingWifi, double txpDista
           2,0,0,1,0,
           3,0,0,0,1);*/
       // if TDMA slot assignment is through a file
-      TdmaHelper tdma = TdmaHelper ("tdmaSlots.txt");
+      TdmaHelper tdma = TdmaHelper (m_tdmaSlotsFile);
       TdmaControllerHelper controller;
       controller.Set ("SlotTime", TimeValue (MicroSeconds (1100)));
       controller.Set ("GuardTime", TimeValue (MicroSeconds (100)));

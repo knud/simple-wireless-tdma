@@ -93,13 +93,13 @@ SimpleWirelessChannel::Add (Ptr<TdmaMacLow> tdmaMacLow)
   NS_LOG_DEBUG ("current m_tdmaMacLowList size: " << m_tdmaMacLowList.size ());
 }
 
-uint32_t
+std::size_t
 SimpleWirelessChannel::GetNDevices (void) const
 {
   return m_tdmaMacLowList.size ();
 }
 Ptr<NetDevice>
-SimpleWirelessChannel::GetDevice (uint32_t i) const
+SimpleWirelessChannel::GetDevice (std::size_t i) const
 {
   return m_tdmaMacLowList[i]->GetDevice ();
 }
